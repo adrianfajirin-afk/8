@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Photobooth Full Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0} body{font-family:Montserrat,sans-serif}
+.page{position:fixed;inset:0}
+#p1{background:url('cover.jpg') center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.names{font-family:'Great Vibes';font-size:64px;color:#b08a3c}.tag{letter-spacing:4px;color:#b08a3c}.date{font-family:'Cormorant Garamond';font-size:36px;color:#b08a3c}
+.start{margin-top:180px;padding:14px 28px;border:none;border-radius:999px}
+#p2,#p3,#p4{display:none}
+#p2{background:#000;color:#fff;flex-direction:column;align-items:center;justify-content:center}
+.cam{width:80vw;height:72vh;max-width:380px;overflow:hidden;border-radius:22px}.cam video{width:100%;height:100%;object-fit:cover}
+.controls{display:flex;gap:12px;margin-top:12px;align-items:center}.flip{width:40px;height:40px;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.shutter{width:60px;height:60px;border:3px solid #fff;border-radius:50%;background:none}
+#p3{background:#fff;padding:16px}.wrap{height:100%;display:flex;flex-direction:column;max-width:430px;margin:auto}
+.photo{flex:1;display:flex;justify-content:center}.photo img{max-width:340px;width:100%}
+.card{border:1px solid #e7dfd3;border-radius:24px 24px 0 0;padding:18px}
+.title{text-align:center;font-size:14px;color:#666}.timer,.wave{text-align:center;margin-top:8px}
+.row{display:flex;gap:12px;margin-top:12px}.btn{flex:1;height:38px}.share{width:100%;height:52px;margin-top:12px}
+#p4{background:#f7f3ed;overflow:auto}.header{text-align:center;padding:20px;font-size:24px;color:#9b7a3b;font-weight:bold}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.cardmem{background:#fff;border-radius:14px;overflow:hidden}.cardmem img{width:100%}.acts{display:flex;justify-content:space-around;padding:10px}
+.empty{text-align:center;padding-top:120px;color:#777}
+.home{position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;display:flex;justify-content:center;align-items:center}
+</style>
+</head>
+<body>
+<div id="p1" class="page">
+<div class="names">Agis & Ilmi</div><div class="tag">FOREVER STARTS HERE</div><div class="date">26.03.2026</div>
+<button class="start" onclick="openCam()">📸 Ambil Foto Yu</button>
+</div>
+
+<div id="p2" class="page">
+<div class="cam"><video id="video" autoplay playsinline></video></div>
+<div class="controls"><div class="flip" onclick="flipCam()">⇄</div><button class="shutter" onclick="capture()"></button><button onclick="toP3()">Share Moment</button></div>
+</div>
+
+<div id="p3" class="page">
+<div class="wrap">
+<div onclick="backCam()" style="font-size:28px">←</div>
+<div class="photo"><img id="previewImg" src="frame.png"></div>
+<div class="card">
+<div class="title">Tinggalkan pesan baik untuk pengantin</div>
+<div id="timer" class="timer">00:00</div>
+<div class="wave">▁▂▃▄▅▆▅▄▃▂▁</div>
+<div class="row">
+<button id="mainBtn" class="btn">● Rekam</button>
+<button id="delBtn" class="btn">🗑 Hapus</button>
+</div>
+<button class="share" onclick="shareMoment()">✨ Share Yuk!</button>
+</div>
+</div>
+</div>
+
+<div id="p4" class="page">
+<div class="header">♥ Our Memories</div>
+<div id="empty" class="empty">Belum Ada Moment</div>
+<div id="grid" class="grid"></div>
+<div class="home" onclick="goHome()">🏠 Home</div>
+</div>
+
+<canvas id="c" style="display:none"></canvas>
+
+<script>
+let stream,facing='user',photoData='',audioURL=null;
+let posts=[];
+
+async function startCam(){
+ if(stream) stream.getTracks().forEach(t=>t.stop());
+ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing}});
+ video.srcObject=stream;
+}
+function openCam(){p1.style.display='none';p2.style.display='flex';startCam();}
+function flipCam(){facing=facing==='user'?'environment':'user';startCam();}
+function capture(){
+ c.width=video.videoWidth;c.height=video.videoHeight;
+ c.getContext('2d').drawImage(video,0,0);
+ photoData=c.toDataURL('image/png');
+ alert('Foto diambil');
+}
+function toP3(){
+ if(!photoData){alert('Ambil foto dulu');return;}
+ previewImg.src=photoData;
+ p2.style.display='none'; p3.style.display='block';
+}
+function backCam(){p3.style.display='none';p2.style.display='flex';}
+function goHome(){p4.style.display='none';p1.style.display='flex';}
+
+let recorder,chunks=[],state='idle',audioObj=null,sec=0,tick=null;
+function draw(){timer.textContent=String(Math.floor(sec/60)).padStart(2,'0')+":"+String(sec%60).padStart(2,'0');}
+mainBtn.onclick=async()=>{
+ if(state==='idle'){
+  const s=await navigator.mediaDevices.getUserMedia({audio:true});
+  recorder=new MediaRecorder(s); chunks=[];
+  recorder.ondataavailable=e=>chunks.push(e.data);
+  recorder.onstop=()=>{audioURL=URL.createObjectURL(new Blob(chunks,{type:'audio/webm'}));state='recorded';mainBtn.textContent='▶ Putar';};
+  recorder.start(); state='recording'; mainBtn.textContent='■ Stop'; sec=0; draw(); tick=setInterval(()=>{sec++;draw();},1000);
+ }else if(state==='recording'){clearInterval(tick); recorder.stop();}
+ else if(state==='recorded'){audioObj=new Audio(audioURL); audioObj.play(); state='playing'; mainBtn.textContent='⏸ Jeda'; audioObj.onended=()=>{state='recorded';mainBtn.textContent='▶ Putar';};}
+ else if(state==='playing'){audioObj.pause(); state='recorded'; mainBtn.textContent='▶ Putar';}
+};
+delBtn.onclick=()=>{audioURL=null;state='idle';mainBtn.textContent='● Rekam';timer.textContent='00:00';};
+
+function shareMoment(){
+ posts.push({photo:photoData,audio:audioURL});
+ renderFeed();
+ p3.style.display='none'; p4.style.display='block';
+}
+function renderFeed(){
+ empty.style.display=posts.length?'none':'block';
+ grid.innerHTML='';
+ posts.forEach((p,i)=>{
+  const d=document.createElement('div');
+  d.className='cardmem';
+  d.innerHTML=`<img src="${p.photo}"><div class="acts"><button onclick="playAudio(${i})">▶</button><a href="${p.photo}" download>⬇</a><button onclick="sharePost(${i})">⤴</button></div>`;
+  grid.appendChild(d);
+ });
+}
+function playAudio(i){ if(posts[i].audio) new Audio(posts[i].audio).play(); else alert('Tidak ada voice note'); }
+function sharePost(i){ alert('Demo Share'); }
+</script>
+</body></html>
