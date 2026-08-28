@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Fatimah &amp; Naufal | Wedding Memories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon-deep:#3d0e12;
+    --maroon:#611a20;
+    --maroon-mid:#7a232b;
+    --maroon-light:#93303a;
+    --cream:#f3e8d6;
+    --cream-dim:#d9c9ac;
+    --gold:#c9a463;
+    --gold-soft:#e2c58b;
+    --shadow:#220709;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; height:100%; background:var(--shadow); font-family:'Cormorant Garamond',serif; overflow:hidden; }
+  .stage{
+    position:relative; width:100%; max-width:430px; height:100vh; max-height:940px;
+    margin:0 auto; background:var(--maroon-deep); overflow:hidden;
+  }
+  .screen{ display:none; position:absolute; inset:0; overflow-y:auto; flex-direction:column; align-items:center; padding:30px 26px 40px; }
+  .screen.active{ display:flex; }
+  .screen::-webkit-scrollbar{ display:none; }
+
+  .eyebrow{ font-family:'Cinzel', serif; font-weight:500; font-size:12.5px; letter-spacing:0.4em; text-indent:0.4em; color:var(--gold-soft); }
+  .names{ font-family:'Pinyon Script', cursive; font-size:38px; color:var(--cream); margin-top:8px; text-align:center; line-height:1; }
+  .date{ margin-top:6px; font-size:14px; letter-spacing:0.14em; color:var(--cream-dim); }
+  .topbar{ width:100%; display:flex; align-items:center; margin-bottom:2px; min-height:24px; }
+  .back-btn{ background:none; border:none; color:var(--cream); font-size:20px; cursor:pointer; padding:4px 8px 4px 0; }
+  .divider{ width:56px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:16px 0; opacity:.8; }
+  .spacer{ flex:1; }
+
+  .btn{
+    font-family:'Cinzel', serif; font-size:12.5px; letter-spacing:0.2em; text-indent:0.2em;
+    padding:15px; border-radius:2px; cursor:pointer; text-align:center; width:100%; max-width:300px;
+    border:1px solid var(--gold-soft); background:transparent; color:var(--cream);
+  }
+  .btn.primary{ background:linear-gradient(180deg, var(--gold-soft), var(--gold)); color:var(--maroon-deep); border:none; }
+  .btn[disabled]{ opacity:.35; pointer-events:none; }
+  .btn.link{ border:none; text-decoration:underline; background:none; padding:8px; font-size:13px; letter-spacing:0.12em; }
+  .btn:active{ opacity:.85; }
+  .mic-icon-inline{ width:14px; height:14px; fill:currentColor; vertical-align:-2px; margin-right:6px; }
+
+  /* ================= SCREEN 0: COVER (ENVELOPE) ================= */
+  #screen-cover{ justify-content:flex-start; background:radial-gradient(120% 70% at 50% 0%, var(--maroon-mid) 0%, var(--maroon) 45%, var(--maroon-deep) 100%); padding-top:0; }
+  .cover-inner{ display:flex; flex-direction:column; align-items:center; width:100%; height:100%; padding:11% 0 9%; transition:opacity .5s ease; }
+  .cover-inner.fade-out{ opacity:0; pointer-events:none; }
+  .cover-eyebrow{ font-family:'Cinzel', serif; font-weight:500; font-size:14px; letter-spacing:0.42em; text-indent:0.42em; color:var(--gold-soft); text-transform:uppercase; }
+  .cover-names{ font-family:'Pinyon Script', cursive; font-size:52px; color:var(--cream); margin-top:14px; line-height:1; text-align:center; text-shadow:0 2px 18px rgba(0,0,0,0.35); }
+  .cover-divider{ width:64px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin-top:20px; opacity:0.8; }
+
+  .envelope-wrap{ position:relative; margin-top:auto; margin-bottom:auto; width:260px; height:182px; perspective:1400px; cursor:pointer; }
+  .envelope-wrap.locked{ cursor:default; }
+  .glow{ position:absolute; left:50%; top:52%; width:320px; height:320px; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(226,197,139,0.16) 0%, rgba(226,197,139,0) 68%); pointer-events:none; }
+  .envelope{ position:absolute; inset:0; filter:drop-shadow(0 22px 30px rgba(0,0,0,0.45)); }
+  .pocket{ position:absolute; left:0; right:0; bottom:0; height:100%; background:linear-gradient(160deg, var(--maroon-light), var(--maroon) 60%, var(--maroon-deep)); border-radius:4px; }
+  .fold{ position:absolute; inset:0; overflow:hidden; border-radius:4px; }
+  .fold::before, .fold::after{ content:""; position:absolute; top:0; width:50%; height:100%; }
+  .fold::before{ left:0; background:linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%); clip-path:polygon(0 0, 100% 100%, 0 100%); }
+  .fold::after{ right:0; background:linear-gradient(225deg, rgba(0,0,0,0.18), transparent 60%); clip-path:polygon(100% 0, 100% 100%, 0 100%); }
+  .letter{ position:absolute; left:6%; right:6%; bottom:8px; height:88%; background:linear-gradient(180deg, #fbf5e8, var(--cream)); border-radius:3px; box-shadow:0 4px 10px rgba(0,0,0,0.25); transform:translateY(12%); z-index:2; display:flex; align-items:center; justify-content:center; transition:transform 1.05s cubic-bezier(.22,.9,.24,1) .55s; }
+  .letter-mark{ font-family:'Pinyon Script', cursive; font-size:28px; color:var(--maroon); opacity:.75; }
+  .flap{ position:absolute; top:0; left:0; right:0; height:58%; background:linear-gradient(160deg, var(--maroon-mid), var(--maroon)); clip-path:polygon(0 0, 100% 0, 50% 100%); transform-origin:top center; transform-style:preserve-3d; transition:transform .85s cubic-bezier(.6,.05,.2,1); z-index:3; backface-visibility:hidden; }
+  .flap::after{ content:""; position:absolute; inset:0; background:linear-gradient(200deg, rgba(255,255,255,0.10), transparent 55%); clip-path:polygon(0 0, 100% 0, 50% 100%); }
+  .seal{ position:absolute; left:50%; top:52%; width:48px; height:48px; transform:translate(-50%,-50%); z-index:4; transition:opacity .4s ease .15s, transform .4s ease .15s; }
+  .seal-half{ position:absolute; top:0; width:50%; height:100%; overflow:hidden; }
+  .seal-half.left{ left:0; } .seal-half.right{ right:0; }
+  .seal-half::before{ content:""; position:absolute; top:0; left:0; width:48px; height:48px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold) 55%, #a9803f 100%); box-shadow:inset 0 2px 4px rgba(255,255,255,0.35), inset 0 -3px 6px rgba(0,0,0,0.25); }
+  .seal-half.right::before{ left:-48px; }
+  .seal-glyph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Pinyon Script', cursive; font-size:24px; color:var(--maroon-deep); z-index:1; }
+  .tap-hint{ margin-top:auto; font-family:'Cinzel', serif; font-size:11.5px; letter-spacing:0.32em; text-indent:0.32em; color:var(--cream-dim); animation:pulse 2.1s ease-in-out infinite; transition:opacity .3s ease; }
+  @keyframes pulse{ 0%,100%{opacity:.55;} 50%{opacity:1;} }
+  .envelope-wrap.open .flap{ transform:rotateX(-172deg); transition-delay:.05s; }
+  .envelope-wrap.open .seal{ opacity:0; transform:translate(-50%,-50%) scale(0.6); }
+  .envelope-wrap.open .letter{ transform:translateY(-330%) scale(1.06); }
+
+  /* ================= SCREEN: WELCOME (HERO) ================= */
+  #screen-welcome{ padding:0; }
+  .welcome-head{ padding:26px 0 14px; text-align:center; }
+  .hero-photo{
+    position:relative; width:100%; aspect-ratio:3/4; background:#8d8f8c;
+    background-image:linear-gradient(160deg,#a6a8a2,#787a75 55%, #5f615c);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;
+  }
+  .hero-photo img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .hero-photo .placeholder{ text-align:center; color:rgba(255,255,255,0.75); font-family:'Cinzel', serif; font-size:11px; letter-spacing:0.15em; padding:0 30px; }
+  .hero-photo .placeholder svg{ width:30px; height:30px; fill:rgba(255,255,255,0.6); margin-bottom:8px; }
+  .hero-overlay{
+    position:absolute; left:0; right:0; bottom:0; padding:16px 18px 20px;
+    background:linear-gradient(0deg, rgba(30,20,15,0.55), transparent 65%);
+    display:flex; justify-content:space-between; align-items:flex-end; gap:10px;
+  }
+  .hero-date{ font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.08em; color:var(--cream); }
+  .hero-tagline{ font-family:'Cinzel', serif; font-size:11px; letter-spacing:0.05em; color:var(--cream); text-align:right; line-height:1.6; text-transform:uppercase; }
+  .ornament-strip{ width:100%; height:26px; background:repeating-linear-gradient(90deg, transparent 0 6px, rgba(201,164,99,0.35) 6px 7px); opacity:0; } /* subtle divider filler if needed */
+
+  .welcome-body{
+    width:100%; background:var(--cream); flex:1; display:flex; flex-direction:column; align-items:center;
+    padding:34px 26px 40px; text-align:center;
+  }
+  .welcome-body .cta-line{ font-size:16px; color:var(--maroon); letter-spacing:0.02em; line-height:1.5; margin-bottom:24px; }
+  .welcome-body .btn.primary{ background:var(--maroon); color:var(--cream); }
+  .welcome-body .btn.link{ color:var(--maroon); margin-top:14px; }
+  input[type=file]{ display:none; }
+
+  /* ================= SCREEN: GALLERY ================= */
+  .gallery-grid{ width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
+  .gallery-card{ background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden; border:1px solid rgba(226,197,139,0.2); }
+  .gallery-card img{ width:100%; display:block; }
+  .gallery-card .meta{ padding:8px 10px; font-size:12px; color:var(--cream-dim); display:flex; justify-content:space-between; align-items:center; }
+  .empty-state{ margin-top:60px; text-align:center; color:var(--cream-dim); }
+  .empty-state h3{ font-family:'Cinzel', serif; font-weight:500; font-size:15px; letter-spacing:0.1em; color:var(--cream); margin-bottom:10px; }
+  .empty-state p{ font-size:15px; line-height:1.6; margin:0 0 26px; }
+
+  /* ================= NAME / QUESTION ================= */
+  h1.q{ font-family:'Cinzel', serif; font-weight:500; font-size:22px; letter-spacing:0.04em; color:var(--cream); text-align:center; margin:14px 0 26px; line-height:1.4; }
+  input[type=text]{
+    width:100%; max-width:300px; background:transparent; border:none; border-bottom:1px solid rgba(226,197,139,0.5);
+    color:var(--cream); font-family:'Cormorant Garamond', serif; font-size:18px; padding:10px 4px; text-align:center; outline:none;
+  }
+  input[type=text]::placeholder{ color:rgba(217,201,172,0.6); }
+
+  /* ================= FRAME CAROUSEL ================= */
+  .carousel{ width:100%; max-width:300px; height:320px; display:flex; overflow-x:auto; scroll-snap-type:x mandatory; margin-top:24px; -webkit-overflow-scrolling:touch; }
+  .carousel::-webkit-scrollbar{ display:none; }
+  .frame-slide{ min-width:100%; scroll-snap-align:center; display:flex; align-items:center; justify-content:center; }
+  .frame-canvas-wrap canvas{ width:170px; height:auto; border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,0.4); }
+  .dots{ display:flex; gap:7px; margin-top:14px; }
+  .dot{ width:6px; height:6px; border-radius:50%; background:rgba(226,197,139,0.35); }
+  .dot.active{ background:var(--gold-soft); width:18px; border-radius:4px; transition:all .25s ease; }
+
+  /* ================= CAMERA ================= */
+  .cam-wrap{ position:relative; width:100%; max-width:300px; aspect-ratio:1/1; border-radius:8px; overflow:hidden; margin-top:16px; background:#111; }
+  .cam-wrap video{ width:100%; height:100%; object-fit:cover; transform:scaleX(var(--mirror,1)); }
+  .flash-toggle{ position:absolute; top:10px; left:10px; width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,0.35); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .flash-toggle svg{ width:16px; height:16px; fill:var(--cream); }
+  .flash-toggle.on svg{ fill:var(--gold-soft); }
+  .slots-row{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
+  .slot-box{ width:48px; height:48px; border-radius:4px; border:1px solid rgba(226,197,139,0.4); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; color:var(--cream-dim); font-family:'Cinzel', serif; font-size:13px; }
+  .slot-box.filled{ border-color:var(--gold-soft); }
+  .slot-box.current{ border-color:var(--cream); border-width:2px; }
+  .slot-box img{ width:100%; height:100%; object-fit:cover; }
+  .cam-controls{ display:flex; align-items:center; justify-content:center; gap:32px; margin-top:18px; }
+  .round-btn{ width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,0.08); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .round-btn svg{ width:20px; height:20px; fill:var(--cream); }
+  .shutter{ width:68px; height:68px; border-radius:50%; background:var(--cream); border:4px solid rgba(255,255,255,0.35); cursor:pointer; }
+  .shutter:active{ transform:scale(0.94); }
+
+  /* ================= REVIEW ================= */
+  .review-main{ width:100%; max-width:300px; aspect-ratio:1/1; border-radius:6px; overflow:hidden; margin-top:16px; background:#000; }
+  .review-main img{ width:100%; height:100%; object-fit:cover; }
+  .thumbs-row{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
+  .thumb{ position:relative; width:60px; height:60px; border-radius:4px; overflow:hidden; cursor:pointer; }
+  .thumb img{ width:100%; height:100%; object-fit:cover; }
+  .thumb.selected{ outline:2px solid var(--gold-soft); }
+  .thumb .del{ position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:var(--cream); color:var(--maroon); font-size:12px; line-height:20px; text-align:center; border:none; cursor:pointer; font-weight:700; }
+
+  /* ================= FILTER / COMPOSE ================= */
+  .compose-wrap canvas{ width:210px; height:auto; border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,0.4); margin-top:14px; }
+  .pills{ display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
+  .pill{ font-size:14px; padding:9px 18px; border-radius:20px; cursor:pointer; background:var(--cream); color:var(--maroon); border:1px solid var(--cream); }
+  .pill.inactive{ background:transparent; color:var(--cream); border-color:rgba(226,197,139,0.5); }
+
+  /* ================= RECORD ================= */
+  .rec-card{ margin-top:20px; width:100%; max-width:300px; background:rgba(255,255,255,0.04); border:1px solid rgba(226,197,139,0.25); border-radius:10px; padding:30px 22px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .rec-card p{ font-size:15px; color:var(--cream-dim); margin:0 0 20px; line-height:1.5; }
+  .mic-btn{ width:78px; height:78px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold) 65%, #a9803f 100%); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px rgba(0,0,0,0.4); position:relative; }
+  .mic-btn.recording{ background:radial-gradient(circle at 35% 30%, #e28b8b, var(--maroon-mid) 70%); }
+  .mic-btn svg{ width:28px; height:28px; fill:var(--maroon-deep); }
+  .mic-btn.recording svg{ fill:var(--cream); }
+  .pulse-ring{ position:absolute; inset:-8px; border-radius:50%; border:2px solid var(--gold-soft); opacity:0; }
+  .mic-btn.recording .pulse-ring{ animation:pulse-ring 1.4s ease-out infinite; }
+  @keyframes pulse-ring{ 0%{opacity:.6; transform:scale(1);} 100%{opacity:0; transform:scale(1.55);} }
+  .rec-timer{ margin-top:16px; font-family:'Cinzel', serif; font-size:20px; color:var(--cream); }
+  .rec-status{ margin-top:6px; font-size:13px; color:var(--cream-dim); min-height:16px; }
+  .rec-wave{ display:flex; align-items:center; justify-content:center; gap:3px; height:28px; margin-top:10px; width:100%; }
+  .rec-wave span{ width:3px; border-radius:2px; background:var(--gold-soft); height:6px; }
+
+  /* ================= FINAL ================= */
+  .final-preview canvas{ width:210px; height:auto; border-radius:6px; box-shadow:0 10px 26px rgba(0,0,0,0.4); margin-top:14px; }
+  .audio-pill{ display:flex; align-items:center; gap:12px; width:100%; max-width:300px; background:var(--cream); border-radius:30px; padding:10px 18px; margin-top:20px; }
+  .audio-pill button{ width:34px; height:34px; border-radius:50%; border:1.5px solid var(--maroon); background:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .audio-pill button svg{ width:12px; height:12px; fill:var(--maroon); }
+  .audio-pill .dur{ font-family:'Cinzel', serif; font-size:13px; color:var(--maroon); flex-shrink:0; }
+  .static-wave{ display:flex; align-items:center; gap:2.5px; flex:1; overflow:hidden; height:22px; }
+  .static-wave span{ width:2.5px; border-radius:2px; background:var(--maroon); opacity:.75; }
+
+  .hint{ margin-top:14px; font-size:12.5px; color:var(--cream-dim); opacity:.75; text-align:center; max-width:280px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- SCREEN: COVER -->
+  <div class="screen active" id="screen-cover" data-screen="cover">
+    <div class="cover-inner" id="coverInner">
+      <div class="cover-eyebrow">Wedding Memories</div>
+      <div class="cover-names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+      <div class="cover-divider"></div>
+      <div class="envelope-wrap" id="envelopeWrap">
+        <div class="glow"></div>
+        <div class="envelope">
+          <div class="pocket"><div class="fold"></div></div>
+          <div class="letter"><div class="letter-mark">F&amp;N</div></div>
+          <div class="flap"></div>
+          <div class="seal"><div class="seal-half left"></div><div class="seal-half right"></div><div class="seal-glyph">N</div></div>
+        </div>
+      </div>
+      <div class="tap-hint" id="tapHint">Ketuk untuk membuka</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: WELCOME (HERO) -->
+  <div class="screen" id="screen-welcome" data-screen="welcome">
+    <div class="welcome-head">
+      <div class="eyebrow">Wedding Memories</div>
+      <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    </div>
+    <div class="hero-photo" id="heroPhoto">
+      <img id="heroImg" alt="">
+      <div class="placeholder" id="heroPlaceholder">
+        <svg viewBox="0 0 24 24"><path d="M9 3l-1.83 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg><br>
+        KETUK UNTUK UNGGAH FOTO PASANGAN
+      </div>
+      <div class="hero-overlay">
+        <div class="hero-date">13 AGUSTUS<br>2026</div>
+        <div class="hero-tagline">Abadikan setiap<br>momen indah dan<br>ciptakan kenangan<br>bersama</div>
+      </div>
+    </div>
+    <input type="file" id="heroFileInput" accept="image/*">
+    <div class="welcome-body">
+      <div class="cta-line">Let's celebrate this day<br>through your eyes</div>
+      <button class="btn primary" id="addMomentBtn">Tambahkan Momen</button>
+      <button class="btn link" id="exploreBtn">Jelajahi Kenangan</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: GALLERY -->
+  <div class="screen" data-screen="gallery">
+    <div class="topbar"><button class="back-btn" data-back="welcome">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="divider"></div>
+    <div id="galleryEmpty" class="empty-state">
+      <h3>Belum Ada Kenangan</h3>
+      <p>Jadilah yang pertama mengabadikan momen<br>dan membagikan harapan untuk mempelai.</p>
+      <button class="btn primary" data-goto-name>Tambah Momen</button>
+    </div>
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </div>
+
+  <!-- SCREEN: NAME -->
+  <div class="screen" data-screen="name">
+    <div class="topbar"><button class="back-btn" data-back="welcome">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="divider"></div>
+    <h1 class="q">Dari siapa<br>kenangan ini?</h1>
+    <input type="text" id="nameInput" placeholder="Nama kamu...">
+    <div class="spacer"></div>
+    <button class="btn primary" id="nameNextBtn" disabled>Selanjutnya</button>
+  </div>
+
+  <!-- SCREEN: FRAME PICKER -->
+  <div class="screen" data-screen="frame">
+    <div class="topbar"><button class="back-btn" data-back="name">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="carousel" id="frameCarousel"></div>
+    <div class="dots" id="frameDots"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="pickFrameBtn">Pilih Bingkai</button>
+  </div>
+
+  <!-- SCREEN: CAMERA -->
+  <div class="screen" data-screen="camera">
+    <div class="topbar"><button class="back-btn" data-back="frame">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="cam-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <button class="flash-toggle" id="flashBtn" title="Flash">
+        <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+      </button>
+    </div>
+    <div class="slots-row" id="slotsRow"></div>
+    <div class="cam-controls">
+      <button class="round-btn" id="switchCamBtn" title="Ganti kamera">
+        <svg viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 16.03 20 14.57 20 13c0-4.42-3.58-8-8-8zm-6 8c0-1.01.25-1.97.7-2.8L5.24 8.74C4.46 9.97 4 11.43 4 13c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/></svg>
+      </button>
+      <button class="shutter" id="shutterBtn" title="Ambil foto"></button>
+      <button class="round-btn" id="galleryPickBtn" title="Pilih dari galeri">
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      </button>
+      <input type="file" id="galleryInput" accept="image/*" style="display:none">
+    </div>
+    <div class="hint" id="camHint">Izinkan akses kamera untuk mulai memotret.</div>
+  </div>
+
+  <!-- SCREEN: REVIEW -->
+  <div class="screen" data-screen="review">
+    <div class="topbar"><button class="back-btn" data-back="camera">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="review-main"><img id="reviewMainImg" alt=""></div>
+    <div class="thumbs-row" id="thumbsRow"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="reviewNextBtn" disabled>Lanjut</button>
+  </div>
+
+  <!-- SCREEN: FILTER / COMPOSE -->
+  <div class="screen" data-screen="filterscreen">
+    <div class="topbar"><button class="back-btn" data-back="review">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="compose-wrap"><canvas id="composeCanvas"></canvas></div>
+    <div class="pills" id="filterPills"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="filterNextBtn">Selanjutnya</button>
+  </div>
+
+  <!-- SCREEN: SHARE CHOICE -->
+  <div class="screen" data-screen="sharechoice">
+    <div class="topbar"><button class="back-btn" data-back="filterscreen">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="compose-wrap"><canvas id="composeCanvas2"></canvas></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="shareOnlyBtn">Bagikan Momen</button>
+    <div style="height:12px"></div>
+    <button class="btn" id="goRecordBtn">
+      <svg class="mic-icon-inline" viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      Rekam Harapan
+    </button>
+  </div>
+
+  <!-- SCREEN: RECORD -->
+  <div class="screen" data-screen="record">
+    <div class="topbar"><button class="back-btn" data-back="sharechoice">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="rec-card">
+      <p>Sampaikan doa atau ucapan untuk kedua mempelai lewat rekaman suara.</p>
+      <button class="mic-btn" id="micBtn">
+        <span class="pulse-ring"></span>
+        <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      </button>
+      <div class="rec-timer" id="recTimer">00:00</div>
+      <div class="rec-status" id="recStatus">Ketuk mikrofon untuk mulai rekam</div>
+      <div class="rec-wave" id="recWave"></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="useRecordingBtn" disabled>Gunakan Rekaman</button>
+    <div id="recPermHint" class="hint"></div>
+  </div>
+
+  <!-- SCREEN: FINAL -->
+  <div class="screen" data-screen="final">
+    <div class="topbar"><button class="back-btn" data-back="sharechoice">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Fatimah&nbsp;&amp;&nbsp;Naufal</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="final-preview"><canvas id="composeCanvas3"></canvas></div>
+    <div class="audio-pill">
+      <button id="finalPlayBtn"><svg id="finalPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="dur" id="finalDur">00:00</div>
+      <div class="static-wave" id="finalWave"></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="finalShareBtn">Bagikan Momen &amp; Harapan</button>
+    <button class="btn link" id="reRecordBtn">Rekam Ulang</button>
+  </div>
+
+</div>
+
+<script>
+/* ==================== STATE ==================== */
+const state = {
+  name: '',
+  frames: [
+    { id:'a', label:'Merah Klasik', slots:3, bg:'#f6ece0', accent:'#8a2530', accent2:'#c9a463' },
+    { id:'b', label:'Mawar Senja',  slots:2, bg:'#fbeee0', accent:'#c9743a', accent2:'#e2b06a' },
+    { id:'c', label:'Taman Hijau',  slots:1, bg:'#f3f0e6', accent:'#5c7048', accent2:'#a9b98c' },
+  ],
+  frameIndex: 0,
+  photos: [],
+  currentSlot: 0,
+  filter: 'original',
+  audioBlob: null,
+  audioUrl: null,
+  audioDuration: 0,
+  waveSamples: [],
+  gallery: [],
+};
+
+/* ==================== GITHUB UPLOAD CONFIG ====================
+   Ganti 4 nilai di bawah ini dengan milik kamu sendiri:
+   - owner  : username / organisasi GitHub kamu
+   - repo   : nama repository tempat gambar disimpan
+   - branch : biasanya 'main'
+   - token  : Personal Access Token dengan scope terbatas
+              (Settings > Developer settings > Fine-grained tokens,
+              batasi HANYA ke repo ini, izin "Contents: Read and write")
+   PENTING: token yang ditaruh di sini akan terlihat oleh siapa saja
+   yang membuka "View Page Source" di halaman ini. Jangan pakai token
+   dengan akses ke repo/akun lain, dan cabut/ganti token ini kalau
+   halaman disebar ke banyak orang.
+================================================================= */
+const GITHUB_CONFIG = {
+  owner:  'adrianfajirin-afk',
+  repo:   '8',
+  branch: 'main',
+  folder: 'uploads',
+  token:  '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'
+};
+
+async function uploadToGitHub(dataUrl, filename){
+  if(!GITHUB_CONFIG.owner || GITHUB_CONFIG.owner.startsWith('GANTI_') ||
+     !GITHUB_CONFIG.token || GITHUB_CONFIG.token.startsWith('GANTI_')){
+    console.warn('[GitHub] Belum dikonfigurasi — lewati upload, gambar hanya tersimpan lokal/di sesi ini.');
+    return null;
+  }
+  const base64 = dataUrl.split(',')[1];
+  const path = `${GITHUB_CONFIG.folder}/${filename}`;
+  const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`;
+  try{
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_CONFIG.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github+json'
+      },
+      body: JSON.stringify({
+        message: `Tambah foto: ${filename}`,
+        content: base64,
+        branch: GITHUB_CONFIG.branch
+      })
+    });
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      console.error('[GitHub] Upload gagal:', res.status, err.message || err);
+      return null;
+    }
+    const data = await res.json();
+    return (data.content && data.content.download_url) ? data.content.download_url : null;
+  }catch(e){
+    console.error('[GitHub] Upload error:', e);
+    return null;
+  }
+}
+function uniqueFilename(prefix){
+  const ts = new Date().toISOString().replace(/[:.]/g,'-');
+  const rand = Math.random().toString(36).slice(2,7);
+  return `${prefix}-${ts}-${rand}.jpg`;
+}
+
+/* ==================== NAV ==================== */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.screen[data-screen="${name}"]`).classList.add('active');
+}
+document.querySelectorAll('[data-back]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showScreen(btn.dataset.back));
+});
+document.querySelectorAll('[data-goto-name]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showScreen('name'));
+});
+
+/* ==================== SCREEN: COVER (ENVELOPE) ==================== */
+const envelopeWrap = document.getElementById('envelopeWrap');
+const coverInner = document.getElementById('coverInner');
+const tapHint = document.getElementById('tapHint');
+let coverOpened = false;
+
+envelopeWrap.addEventListener('click', () => {
+  if (coverOpened) return;
+  coverOpened = true;
+  envelopeWrap.classList.add('locked','open');
+  tapHint.style.opacity = '0';
+  setTimeout(() => { coverInner.classList.add('fade-out'); }, 1450);
+  setTimeout(() => { showScreen('welcome'); }, 1900);
+});
+
+/* ==================== SCREEN: WELCOME (HERO PHOTO UPLOAD) ==================== */
+const heroPhoto = document.getElementById('heroPhoto');
+const heroImg = document.getElementById('heroImg');
+const heroPlaceholder = document.getElementById('heroPlaceholder');
+const heroFileInput = document.getElementById('heroFileInput');
+
+heroPhoto.addEventListener('click', ()=> heroFileInput.click());
+heroFileInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    heroImg.src = ev.target.result;
+    heroImg.style.display = 'block';
+    heroPlaceholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('addMomentBtn').addEventListener('click', ()=> showScreen('name'));
+document.getElementById('exploreBtn').addEventListener('click', ()=>{ renderGallery(); showScreen('gallery'); });
+
+/* ==================== SCREEN: GALLERY ==================== */
+function renderGallery(){
+  const grid = document.getElementById('galleryGrid');
+  const empty = document.getElementById('galleryEmpty');
+  grid.innerHTML = '';
+  if(state.gallery.length === 0){
+    empty.style.display = 'block';
+    grid.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+  state.gallery.forEach(item=>{
+    const card = document.createElement('div');
+    card.className = 'gallery-card';
+    card.innerHTML = `<img src="${item.img}"><div class="meta"><span>${item.name || 'Anonim'}</span>${item.hasAudio ? '♪' : ''}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ==================== SCREEN: NAME ==================== */
+const nameInput = document.getElementById('nameInput');
+const nameNextBtn = document.getElementById('nameNextBtn');
+nameInput.addEventListener('input', ()=>{
+  state.name = nameInput.value.trim();
+  nameNextBtn.disabled = state.name.length === 0;
+});
+nameNextBtn.addEventListener('click', ()=>{
+  buildFrameCarousel();
+  showScreen('frame');
+});
+
+/* ==================== FRAME DRAWING (shared) ==================== */
+function drawFrame(canvas, frame, photos, filter){
+  const W = 300, H = frame.slots === 1 ? 420 : (frame.slots === 2 ? 480 : 560);
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = frame.bg;
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = frame.accent2;
+  ctx.lineWidth = 6;
+  ctx.strokeRect(3,3,W-6,H-6);
+  ctx.fillStyle = frame.accent;
+  ctx.font = '600 13px Cinzel, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('WEDDING MEMORIES', W/2, 30);
+  drawCornerOrnament(ctx, 14, 46, frame.accent2, 1);
+  drawCornerOrnament(ctx, W-14, 46, frame.accent2, -1);
+  drawCornerOrnament(ctx, 14, H-56, frame.accent2, 1);
+  drawCornerOrnament(ctx, W-14, H-56, frame.accent2, -1);
+
+  const padX = 24, gap = 14, topY = 54, bottomPad = 96;
+  const slotW = W - padX*2;
+  const slotH = (H - topY - bottomPad - gap*(frame.slots-1)) / frame.slots;
+
+  for(let i=0;i<frame.slots;i++){
+    const sx = padX, sy = topY + i*(slotH+gap);
+    ctx.fillStyle = '#d8d2c4';
+    ctx.fillRect(sx, sy, slotW, slotH);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(sx, sy, slotW, slotH);
+    if(photos[i]){ drawImageCover(ctx, photos[i], sx, sy, slotW, slotH, filter); }
+  }
+
+  ctx.font = 'italic 500 11px "Cormorant Garamond", serif';
+  ctx.fillStyle = frame.accent;
+  ctx.fillText('THE WEDDING OF', W/2, H-70);
+  ctx.font = '600 20px "Cormorant Garamond", serif';
+  ctx.fillText('Naufal & Fatimah', W/2, H-46);
+  ctx.font = '500 11px Cinzel, serif';
+  ctx.fillText('13 AGUSTUS 2026', W/2, H-24);
+}
+function drawCornerOrnament(ctx, x, y, color, dir){
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.bezierCurveTo(x+dir*18, y-6, x+dir*22, y+14, x+dir*6, y+18);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x+dir*10, y+6, 2.4, 0, Math.PI*2);
+  ctx.fillStyle = color; ctx.fill();
+  ctx.restore();
+}
+function drawImageCover(ctx, imgOrDataUrl, dx, dy, dw, dh, filter){
+  const img = imgOrDataUrl instanceof HTMLImageElement ? imgOrDataUrl : cachedImage(imgOrDataUrl);
+  if(!img.complete){ img.onload = () => drawImageCover(ctx, img, dx, dy, dw, dh, filter); return; }
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const ir = iw/ih, dr = dw/dh;
+  let sx, sy, sw, sh;
+  if(ir > dr){ sh = ih; sw = ih*dr; sx = (iw-sw)/2; sy = 0; }
+  else { sw = iw; sh = iw/dr; sx = 0; sy = (ih-sh)/2; }
+  ctx.save();
+  ctx.filter = filterCss(filter);
+  ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  ctx.restore();
+}
+const _imgCache = {};
+function cachedImage(src){
+  if(_imgCache[src]) return _imgCache[src];
+  const img = new Image(); img.src = src; _imgCache[src] = img; return img;
+}
+function filterCss(f){
+  if(f === 'bw') return 'grayscale(1) contrast(1.05)';
+  if(f === 'vintage') return 'sepia(0.55) saturate(1.2) contrast(0.95) brightness(1.02)';
+  return 'none';
+}
+
+/* ==================== SCREEN: FRAME PICKER ==================== */
+const frameCarousel = document.getElementById('frameCarousel');
+const frameDots = document.getElementById('frameDots');
+function buildFrameCarousel(){
+  frameCarousel.innerHTML = ''; frameDots.innerHTML = '';
+  state.frames.forEach((frame, i)=>{
+    const slide = document.createElement('div'); slide.className = 'frame-slide';
+    const wrap = document.createElement('div'); wrap.className = 'frame-canvas-wrap';
+    const canvas = document.createElement('canvas');
+    wrap.appendChild(canvas); slide.appendChild(wrap); frameCarousel.appendChild(slide);
+    drawFrame(canvas, frame, [], 'original');
+    const dot = document.createElement('div'); dot.className = 'dot' + (i===0?' active':'');
+    frameDots.appendChild(dot);
+  });
+  frameCarousel.scrollTo({left:0});
+  state.frameIndex = 0;
+}
+frameCarousel.addEventListener('scroll', ()=>{
+  const idx = Math.round(frameCarousel.scrollLeft / frameCarousel.clientWidth);
+  state.frameIndex = Math.max(0, Math.min(state.frames.length-1, idx));
+  document.querySelectorAll('#frameDots .dot').forEach((d,i)=> d.classList.toggle('active', i===state.frameIndex));
+});
+document.getElementById('pickFrameBtn').addEventListener('click', ()=>{
+  state.photos = []; state.currentSlot = 0;
+  buildSlotsRow(); showScreen('camera'); startCamera();
+});
+
+/* ==================== SCREEN: CAMERA ==================== */
+const video = document.getElementById('video');
+const slotsRow = document.getElementById('slotsRow');
+const shutterBtn = document.getElementById('shutterBtn');
+const switchCamBtn = document.getElementById('switchCamBtn');
+const galleryPickBtn = document.getElementById('galleryPickBtn');
+const galleryInput = document.getElementById('galleryInput');
+const flashBtn = document.getElementById('flashBtn');
+const camHint = document.getElementById('camHint');
+let currentStream = null, facingMode = 'user', torchOn = false;
+
+function buildSlotsRow(){
+  slotsRow.innerHTML = '';
+  const frame = state.frames[state.frameIndex];
+  for(let i=0;i<frame.slots;i++){
+    const box = document.createElement('div'); box.className = 'slot-box'; box.textContent = i+1;
+    slotsRow.appendChild(box);
+  }
+  refreshSlotsRow();
+}
+function refreshSlotsRow(){
+  const boxes = slotsRow.querySelectorAll('.slot-box');
+  boxes.forEach((box,i)=>{
+    box.classList.toggle('filled', !!state.photos[i]);
+    box.classList.toggle('current', i === state.currentSlot);
+    box.innerHTML = state.photos[i] ? `<img src="${state.photos[i]}">` : (i+1);
+  });
+}
+async function startCamera(){
+  stopCamera();
+  try{
+    currentStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode }, audio:false });
+    video.srcObject = currentStream;
+    video.style.setProperty('--mirror', facingMode === 'user' ? -1 : 1);
+    camHint.textContent = '';
+  }catch(err){
+    camHint.textContent = 'Kamera tidak tersedia atau izin ditolak. Gunakan tombol galeri untuk memilih foto.';
+  }
+}
+function stopCamera(){ if(currentStream){ currentStream.getTracks().forEach(t=>t.stop()); currentStream=null; } }
+switchCamBtn.addEventListener('click', ()=>{ facingMode = facingMode === 'user' ? 'environment' : 'user'; startCamera(); });
+flashBtn.addEventListener('click', async ()=>{
+  if(!currentStream) return;
+  const track = currentStream.getVideoTracks()[0];
+  const caps = track.getCapabilities ? track.getCapabilities() : {};
+  if(caps.torch){
+    torchOn = !torchOn;
+    try{ await track.applyConstraints({ advanced:[{ torch: torchOn }] }); }catch(e){}
+    flashBtn.classList.toggle('on', torchOn);
+  }else{ flashBtn.classList.toggle('on'); }
+});
+function capturePhoto(dataUrl){
+  const frame = state.frames[state.frameIndex];
+  state.photos[state.currentSlot] = dataUrl;
+  if(state.currentSlot < frame.slots - 1){ state.currentSlot++; }
+  refreshSlotsRow();
+  if(state.photos.filter(Boolean).length >= frame.slots){ stopCamera(); goToReview(); }
+}
+shutterBtn.addEventListener('click', ()=>{
+  if(!currentStream) return;
+  const c = document.createElement('canvas'); c.width = 640; c.height = 640;
+  const ctx = c.getContext('2d');
+  const vw = video.videoWidth, vh = video.videoHeight;
+  const side = Math.min(vw, vh);
+  const sx = (vw-side)/2, sy = (vh-side)/2;
+  ctx.save();
+  if(facingMode === 'user'){ ctx.translate(c.width,0); ctx.scale(-1,1); }
+  ctx.drawImage(video, sx, sy, side, side, 0, 0, c.width, c.height);
+  ctx.restore();
+  capturePhoto(c.toDataURL('image/jpeg', 0.92));
+});
+galleryPickBtn.addEventListener('click', ()=> galleryInput.click());
+galleryInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => capturePhoto(ev.target.result);
+  reader.readAsDataURL(file);
+  galleryInput.value = '';
+});
+
+/* ==================== SCREEN: REVIEW ==================== */
+const reviewMainImg = document.getElementById('reviewMainImg');
+const thumbsRow = document.getElementById('thumbsRow');
+const reviewNextBtn = document.getElementById('reviewNextBtn');
+let reviewSelectedIndex = 0;
+function goToReview(){ reviewSelectedIndex = state.photos.length - 1; renderReview(); showScreen('review'); }
+function renderReview(){
+  reviewMainImg.src = state.photos[reviewSelectedIndex] || '';
+  thumbsRow.innerHTML = '';
+  state.photos.forEach((p,i)=>{
+    if(!p) return;
+    const t = document.createElement('div'); t.className = 'thumb' + (i===reviewSelectedIndex ? ' selected':'');
+    t.innerHTML = `<img src="${p}"><button class="del" data-i="${i}">×</button>`;
+    t.querySelector('img').addEventListener('click', ()=>{ reviewSelectedIndex = i; renderReview(); });
+    t.querySelector('.del').addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      state.photos[i] = null; state.currentSlot = i;
+      buildSlotsRow(); showScreen('camera'); startCamera();
+    });
+    thumbsRow.appendChild(t);
+  });
+  const frame = state.frames[state.frameIndex];
+  reviewNextBtn.disabled = state.photos.filter(Boolean).length < frame.slots;
+}
+reviewNextBtn.addEventListener('click', ()=>{ state.filter = 'original'; renderFilterScreen(); showScreen('filterscreen'); });
+
+/* ==================== SCREEN: FILTER / COMPOSE ==================== */
+const filterPills = document.getElementById('filterPills');
+const composeCanvas = document.getElementById('composeCanvas');
+const FILTERS = [ ['original','Original'], ['bw','Black & White'], ['vintage','Vintage'] ];
+function renderFilterScreen(){
+  const frame = state.frames[state.frameIndex];
+  drawFrame(composeCanvas, frame, state.photos, state.filter);
+  filterPills.innerHTML = '';
+  FILTERS.forEach(([id,label])=>{
+    const pill = document.createElement('div');
+    pill.className = 'pill' + (state.filter===id ? '' : ' inactive');
+    pill.textContent = label;
+    pill.addEventListener('click', ()=>{ state.filter = id; renderFilterScreen(); });
+    filterPills.appendChild(pill);
+  });
+}
+document.getElementById('filterNextBtn').addEventListener('click', ()=>{
+  const frame = state.frames[state.frameIndex];
+  drawFrame(document.getElementById('composeCanvas2'), frame, state.photos, state.filter);
+  showScreen('sharechoice');
+});
+
+/* ==================== SCREEN: SHARE CHOICE ==================== */
+document.getElementById('shareOnlyBtn').addEventListener('click', async ()=>{
+  const canvas = document.getElementById('composeCanvas2');
+  const dataUrl = canvas.toDataURL('image/jpeg',0.9);
+  const filename = uniqueFilename('wedding');
+  state.gallery.unshift({ img: dataUrl, name: state.name, hasAudio:false });
+  downloadCanvas(canvas, filename);
+  renderGallery();
+  showScreen('gallery');
+  const githubUrl = await uploadToGitHub(dataUrl, filename);
+  if(githubUrl) console.log('[GitHub] Tersimpan:', githubUrl);
+});
+document.getElementById('goRecordBtn').addEventListener('click', ()=> showScreen('record'));
+function downloadCanvas(canvas, filename){
+  const a = document.createElement('a'); a.download = filename; a.href = canvas.toDataURL('image/jpeg', 0.95); a.click();
+}
+
+/* ==================== SCREEN: RECORD ==================== */
+const micBtn = document.getElementById('micBtn');
+const recTimer = document.getElementById('recTimer');
+const recStatus = document.getElementById('recStatus');
+const recWave = document.getElementById('recWave');
+const useRecordingBtn = document.getElementById('useRecordingBtn');
+const recPermHint = document.getElementById('recPermHint');
+const WAVE_BARS = 24;
+for(let i=0;i<WAVE_BARS;i++){ const s=document.createElement('span'); recWave.appendChild(s); }
+const waveBarEls = recWave.querySelectorAll('span');
+let mediaRecorder, audioChunks=[], micStream, isRecording=false, recStart, recInterval;
+let audioCtx, analyser, dataArray, rafId;
+
+async function startRec(){
+  try{ micStream = await navigator.mediaDevices.getUserMedia({ audio:true }); }
+  catch(e){ recPermHint.textContent = 'Izin mikrofon ditolak atau tidak tersedia. Aktifkan akses mikrofon di pengaturan browser.'; return; }
+  recPermHint.textContent = '';
+  audioChunks = []; state.waveSamples = [];
+  mediaRecorder = new MediaRecorder(micStream);
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+    state.audioBlob = blob; state.audioUrl = URL.createObjectURL(blob);
+    micStream.getTracks().forEach(t=>t.stop());
+    if(audioCtx){ audioCtx.close(); audioCtx=null; }
+    cancelAnimationFrame(rafId);
+    waveBarEls.forEach(b=> b.style.height='6px');
+    useRecordingBtn.disabled = false;
+  };
+  mediaRecorder.start();
+  isRecording = true;
+  micBtn.classList.add('recording');
+  recStatus.textContent = 'Sedang merekam… ketuk lagi untuk berhenti';
+  useRecordingBtn.disabled = true;
+  recStart = Date.now();
+  recInterval = setInterval(()=>{
+    const secs = (Date.now()-recStart)/1000;
+    recTimer.textContent = fmtTime(secs);
+    state.audioDuration = secs;
+  }, 200);
+  setupRecWave();
+}
+function stopRec(){
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  isRecording = false;
+  micBtn.classList.remove('recording');
+  recStatus.textContent = 'Rekaman selesai';
+  clearInterval(recInterval);
+}
+function setupRecWave(){
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  const src = audioCtx.createMediaStreamSource(micStream);
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 64;
+  dataArray = new Uint8Array(analyser.frequencyBinCount);
+  src.connect(analyser);
+  let frameCount = 0;
+  function draw(){
+    analyser.getByteFrequencyData(dataArray);
+    waveBarEls.forEach((bar,i)=>{
+      const v = dataArray[i % dataArray.length] || 0;
+      bar.style.height = Math.max(6, (v/255)*28)+'px';
+    });
+    frameCount++;
+    if(frameCount % 6 === 0){
+      const avg = dataArray.reduce((a,b)=>a+b,0)/dataArray.length;
+      state.waveSamples.push(avg/255);
+    }
+    rafId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+function fmtTime(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const sec = Math.floor(s%60).toString().padStart(2,'0');
+  return `${m}:${sec}`;
+}
+micBtn.addEventListener('click', ()=>{ isRecording ? stopRec() : startRec(); });
+useRecordingBtn.addEventListener('click', ()=>{
+  const frame = state.frames[state.frameIndex];
+  drawFrame(document.getElementById('composeCanvas3'), frame, state.photos, state.filter);
+  buildFinalWave();
+  document.getElementById('finalDur').textContent = fmtTime(state.audioDuration);
+  showScreen('final');
+});
+
+/* ==================== SCREEN: FINAL ==================== */
+const finalWave = document.getElementById('finalWave');
+const finalPlayBtn = document.getElementById('finalPlayBtn');
+const finalPlayIcon = document.getElementById('finalPlayIcon');
+let finalAudioEl = null, finalPlaying = false;
+function buildFinalWave(){
+  finalWave.innerHTML = '';
+  const samples = state.waveSamples.length ? state.waveSamples : Array.from({length:24},()=>Math.random());
+  const N = 30;
+  for(let i=0;i<N;i++){
+    const v = samples[Math.floor(i/N*samples.length)] || 0.2;
+    const bar = document.createElement('span');
+    bar.style.height = Math.max(4, v*20) + 'px';
+    finalWave.appendChild(bar);
+  }
+}
+finalPlayBtn.addEventListener('click', ()=>{
+  if(!state.audioUrl) return;
+  if(!finalAudioEl){
+    finalAudioEl = new Audio(state.audioUrl);
+    finalAudioEl.addEventListener('ended', ()=>{ finalPlaying=false; finalPlayIcon.innerHTML='<path d="M8 5v14l11-7z"/>'; });
+  }
+  if(finalPlaying){ finalAudioEl.pause(); finalPlaying=false; finalPlayIcon.innerHTML='<path d="M8 5v14l11-7z"/>'; }
+  else{ finalAudioEl.play(); finalPlaying=true; finalPlayIcon.innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; }
+});
+document.getElementById('finalShareBtn').addEventListener('click', async ()=>{
+  const canvas = document.getElementById('composeCanvas3');
+  const dataUrl = canvas.toDataURL('image/jpeg',0.9);
+  const filename = uniqueFilename('wedding');
+  state.gallery.unshift({ img: dataUrl, name: state.name, hasAudio: !!state.audioUrl });
+  downloadCanvas(canvas, filename);
+  if(state.audioUrl){
+    const a = document.createElement('a'); a.download = 'harapan.webm'; a.href = state.audioUrl; a.click();
+  }
+  renderGallery();
+  showScreen('gallery');
+  const githubUrl = await uploadToGitHub(dataUrl, filename);
+  if(githubUrl) console.log('[GitHub] Tersimpan:', githubUrl);
+});
+document.getElementById('reRecordBtn').addEventListener('click', ()=>{
+  useRecordingBtn.disabled = true;
+  recTimer.textContent = '00:00';
+  recStatus.textContent = 'Ketuk mikrofon untuk mulai rekam';
+  showScreen('record');
+});
+</script>
+</body>
+</html>
