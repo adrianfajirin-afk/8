@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Ilmi &amp; Agis | Wedding Memories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- SCREEN: COVER -->
+  <div class="screen active" id="screen-cover" data-screen="cover">
+    <div class="cover-inner" id="coverInner">
+      <div class="cover-eyebrow">Wedding Memories</div>
+      <div class="cover-names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+      <div class="cover-divider"></div>
+      <div class="envelope-wrap" id="envelopeWrap">
+        <div class="glow"></div>
+        <div class="envelope">
+          <div class="pocket"><div class="fold"></div></div>
+          <div class="letter"><div class="letter-mark">F&amp;N</div></div>
+          <div class="flap"></div>
+          <div class="seal"><div class="seal-half left"></div><div class="seal-half right"></div><div class="seal-glyph">N</div></div>
+        </div>
+      </div>
+      <div class="tap-hint" id="tapHint">Ketuk untuk membuka</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: WELCOME (HERO) -->
+  <div class="screen" id="screen-welcome" data-screen="welcome">
+    <div class="welcome-head">
+      <div class="eyebrow">Wedding Memories</div>
+      <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    </div>
+    <div class="hero-photo" id="heroPhoto">
+      <img id="heroImg" alt="Ilmi dan Agis" src="img/hero-photo.jpg" style="display:block;">
+      <div class="hero-overlay">
+        <div class="hero-date">13 AGUSTUS<br>2026</div>
+        <div class="hero-tagline">Abadikan setiap<br>momen indah dan<br>ciptakan kenangan<br>bersama</div>
+      </div>
+    </div>
+    <!-- Foto sampul sudah tetap (fixed) dan hanya bisa diganti lewat kode oleh admin.
+         Tamu tidak lagi bisa mengunggah/mengganti foto ini. -->
+    <div class="welcome-body">
+      <div class="cta-line">Let's celebrate this day<br>through your eyes</div>
+      <button class="btn primary" id="addMomentBtn">Tambahkan Momen</button>
+      <button class="btn link" id="exploreBtn">Jelajahi Kenangan</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: GALLERY -->
+  <div class="screen" data-screen="gallery">
+    <div class="topbar"><button class="back-btn" data-back="welcome">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="divider"></div>
+    <div id="galleryEmpty" class="empty-state">
+      <h3>Belum Ada Kenangan</h3>
+      <p>Jadilah yang pertama mengabadikan momen<br>dan membagikan harapan untuk mempelai.</p>
+      <button class="btn primary" data-goto-name>Tambah Momen</button>
+    </div>
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </div>
+
+  <!-- MODAL: DETAIL FOTO GALERI -->
+  <div class="photo-modal-overlay" id="photoModal">
+    <div class="photo-modal-card">
+      <div class="photo-modal-topbar">
+        <a href="#" id="modalDownloadBtn" class="modal-link"><svg class="modal-link-icon" viewBox="0 0 24 24"><path d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3zM5 19h14v2H5v-2z"/></svg> Unduh Softfile</a>
+        <button id="modalCloseBtn" class="modal-link modal-close">Tutup</button>
+      </div>
+      <div class="photo-modal-body">
+        <div class="photo-modal-frame" id="modalFrame">
+          <img id="modalImg" src="" alt="Wedding Memories">
+          <div class="video-frame" id="videoFrame" style="display:none;">
+            <video id="modalVideo" playsinline loop></video>
+            <button class="video-mute-btn" id="videoMuteBtn" aria-label="Suara">
+              <svg id="videoMuteIcon" viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            </button>
+            <button class="video-tap-layer" id="videoTapLayer" aria-label="Putar/Jeda">
+              <svg id="videoCenterIcon" class="video-center-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="video-progress-track"><div class="video-progress-fill" id="videoProgressFill"></div></div>
+          </div>
+        </div>
+        <div class="audio-pill" id="modalAudioPill">
+          <button id="modalPlayBtn"><svg id="modalPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+          <div class="dur" id="modalDur">00:15</div>
+          <div class="static-wave" id="modalWave"></div>
+        </div>
+        <div class="modal-sender" id="modalSender">Anonim</div>
+        <div class="modal-caption" id="modalCaption"></div>
+        <div class="modal-divider"></div>
+        <div class="modal-meta">
+          <span id="modalDate">25 AGUSTUS 2026</span>
+          <span id="modalTime">10.57 WIB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: NAME -->
+  <div class="screen" data-screen="name">
+    <div class="topbar"><button class="back-btn" data-back="welcome">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="divider"></div>
+    <h1 class="q">Dari siapa<br>kenangan ini?</h1>
+    <input type="text" id="nameInput" placeholder="Nama kamu...">
+    <div class="spacer"></div>
+    <button class="btn primary" id="nameNextBtn" disabled>Selanjutnya</button>
+  </div>
+
+  <!-- SCREEN: MODE CHOICE -->
+  <div class="screen" data-screen="modechoice">
+    <div class="topbar"><button class="back-btn" data-back="name">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="divider"></div>
+    <h1 class="q">Mau kirim<br>foto atau video?</h1>
+    <div class="mode-cards">
+      <button class="mode-card" id="pickPhotoModeBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 3l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2h-3.17L15 3H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+        <span>Foto</span>
+        <small>Pakai bingkai &amp; filter</small>
+      </button>
+      <button class="mode-card" id="pickVideoModeBtn">
+        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+        <span>Video</span>
+        <small>Rekam momen bergerak</small>
+      </button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- SCREEN: FRAME PICKER -->
+  <div class="screen" data-screen="frame">
+    <div class="topbar"><button class="back-btn" data-back="modechoice">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="carousel" id="frameCarousel"></div>
+    <div class="dots" id="frameDots"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="pickFrameBtn">Pilih Bingkai</button>
+  </div>
+
+  <!-- SCREEN: CAMERA -->
+  <div class="screen" data-screen="camera">
+    <div class="topbar"><button class="back-btn" data-back="frame">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="cam-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <button class="flash-toggle" id="flashBtn" title="Flash">
+        <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+      </button>
+    </div>
+    <div class="slots-row" id="slotsRow"></div>
+    <div class="cam-controls">
+      <button class="round-btn" id="switchCamBtn" title="Ganti kamera">
+        <svg viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 16.03 20 14.57 20 13c0-4.42-3.58-8-8-8zm-6 8c0-1.01.25-1.97.7-2.8L5.24 8.74C4.46 9.97 4 11.43 4 13c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/></svg>
+      </button>
+      <button class="shutter" id="shutterBtn" title="Ambil foto"></button>
+      <button class="round-btn" id="galleryPickBtn" title="Pilih dari galeri">
+        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+      </button>
+      <input type="file" id="galleryInput" accept="image/*" style="display:none">
+    </div>
+    <div class="hint" id="camHint">Izinkan akses kamera untuk mulai memotret.</div>
+  </div>
+
+  <!-- SCREEN: REVIEW -->
+  <div class="screen" data-screen="review">
+    <div class="topbar"><button class="back-btn" data-back="camera">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="review-main"><img id="reviewMainImg" alt=""></div>
+    <div class="thumbs-row" id="thumbsRow"></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="reviewNextBtn" disabled>Lanjut</button>
+  </div>
+
+  <!-- SCREEN: FILTER / COMPOSE -->
+  <div class="screen" data-screen="filterscreen">
+    <div class="topbar"><button class="back-btn" data-back="review">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="compose-wrap"><canvas id="composeCanvas"></canvas></div>
+    <div class="pills" id="filterPills"></div>
+    <div class="caption-field">
+      <textarea id="captionInput" maxlength="120" rows="2" placeholder="Tulis caption atau harapan singkat untuk mempelai... (opsional)"></textarea>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="filterNextBtn">Selanjutnya</button>
+  </div>
+
+  <!-- SCREEN: SHARE CHOICE -->
+  <div class="screen" data-screen="sharechoice">
+    <div class="topbar"><button class="back-btn" data-back="filterscreen">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="compose-wrap"><canvas id="composeCanvas2"></canvas></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="shareOnlyBtn">Bagikan Momen</button>
+    <div style="height:12px"></div>
+    <button class="btn" id="goRecordBtn">
+      <svg class="mic-icon-inline" viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      Rekam Harapan
+    </button>
+  </div>
+
+  <!-- SCREEN: RECORD -->
+  <div class="screen" data-screen="record">
+    <div class="topbar"><button class="back-btn" data-back="sharechoice">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="rec-card">
+      <p>Sampaikan doa atau ucapan untuk kedua mempelai lewat rekaman suara.</p>
+      <button class="mic-btn" id="micBtn">
+        <span class="pulse-ring"></span>
+        <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      </button>
+      <div class="rec-timer" id="recTimer">00:00</div>
+      <div class="rec-status" id="recStatus">Ketuk mikrofon untuk mulai rekam</div>
+      <div class="rec-wave" id="recWave"></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="useRecordingBtn" disabled>Gunakan Rekaman</button>
+    <div id="recPermHint" class="hint"></div>
+  </div>
+
+  <!-- SCREEN: FINAL -->
+  <div class="screen" data-screen="final">
+    <div class="topbar"><button class="back-btn" data-back="sharechoice">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="final-preview"><canvas id="composeCanvas3"></canvas></div>
+    <div class="audio-pill">
+      <button id="finalPlayBtn"><svg id="finalPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="dur" id="finalDur">00:00</div>
+      <div class="static-wave" id="finalWave"></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="finalShareBtn">Bagikan Momen &amp; Harapan</button>
+    <button class="btn link" id="reRecordBtn">Rekam Ulang</button>
+  </div>
+
+  <!-- SCREEN: VIDEO RECORD (tampilan ala Instagram Reels — layar penuh) -->
+  <div class="screen reels-screen" data-screen="videorecord">
+    <div class="reels-cam-full">
+      <video id="videoRecPreview" autoplay playsinline muted style="display:none;"></video>
+      <canvas id="videoRecCanvas"></canvas>
+      <button class="reels-close-btn" data-back="modechoice" aria-label="Tutup">
+        <svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <button class="reels-flip-btn" id="switchVideoCamBtn" aria-label="Ganti kamera">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 16.03 20 14.57 20 13c0-4.42-3.58-8-8-8zm-6 8c0-1.01.25-1.97.7-2.8L5.24 8.74C4.46 9.97 4 11.43 4 13c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/></svg>
+      </button>
+      <div class="reels-timer" id="videoRecTimer" style="display:none">00:00</div>
+      <div class="reels-hint" id="videoRecHint"></div>
+      <div class="reels-filter-row" id="reelsFilterRow">
+        <button class="reels-filter-btn reels-filter-main selected" data-filter="natural"><span class="fdot natural"></span><span class="flabel">Natural</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="beauty"><span class="fdot beauty"></span><span class="flabel">Beauty</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="clean"><span class="fdot clean"></span><span class="flabel">Clean Skin</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="soft"><span class="fdot soft"></span><span class="flabel">Soft Glow</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="ivory"><span class="fdot ivory"></span><span class="flabel">Ivory</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="wedding"><span class="fdot wedding"></span><span class="flabel">Warm Wedding</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="champagne"><span class="fdot champagne"></span><span class="flabel">Champagne</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="peach"><span class="fdot peach"></span><span class="flabel">Peach Blush</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="rose"><span class="fdot rose"></span><span class="flabel">Rose Garden</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="pastel"><span class="fdot pastel"></span><span class="flabel">Pastel Bloom</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="mocha"><span class="fdot mocha"></span><span class="flabel">Mocha Matte</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="filmgold"><span class="fdot filmgold"></span><span class="flabel">Film Gold</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="sunnyfilm"><span class="fdot sunnyfilm"></span><span class="flabel">Sunny Film</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="disposable"><span class="fdot disposable"></span><span class="flabel">Disposable</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="vintage90"><span class="fdot vintage90"></span><span class="flabel">Vintage 90s</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="retrof"><span class="fdot retrof"></span><span class="flabel">Retro Fade</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="digicam"><span class="fdot digicam"></span><span class="flabel">Digicam</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="ccd"><span class="fdot ccd"></span><span class="flabel">CCD Blue</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="silver"><span class="fdot silver"></span><span class="flabel">Silver Pearl</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="afterrain"><span class="fdot afterrain"></span><span class="flabel">After Rain</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="bw"><span class="fdot bw"></span><span class="flabel">B&amp;W Classic</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="sepia"><span class="fdot sepia"></span><span class="flabel">Sepia</span></button>
+        <button class="reels-filter-btn reels-filter-main" data-filter="midnight"><span class="fdot midnight"></span><span class="flabel">Midnight</span></button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SCREEN: VIDEO PREVIEW -->
+  <div class="screen" data-screen="videopreview">
+    <div class="topbar"><button class="back-btn" data-back="videorecord">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="cam-wrap video-mode">
+      <video id="videoPreviewPlayer" playsinline controls></video>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="videoUseBtn">Lanjut</button>
+    <button class="btn link" id="videoRetakeBtn">Rekam Ulang</button>
+  </div>
+
+  <!-- SCREEN: VIDEO SHARE -->
+  <div class="screen" data-screen="videoshare">
+    <div class="topbar"><button class="back-btn" data-back="videopreview">←</button></div>
+    <div class="eyebrow">Wedding Memories</div>
+    <div class="names">Ilmi&nbsp;&amp;&nbsp;Agis</div>
+    <div class="date">13 AGUSTUS 2026</div>
+    <div class="cam-wrap video-mode"><video id="videoShareThumb" playsinline muted loop autoplay></video></div>
+    <div class="caption-field">
+      <textarea id="videoCaptionInput" maxlength="120" rows="2" placeholder="Tulis caption atau harapan singkat untuk mempelai... (opsional)"></textarea>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="videoShareBtn">Bagikan Momen</button>
+  </div>
+
+</div>
+
+
+<div id="debugBanner" onclick="this.style.display='none'" style="display:none; position:fixed; left:10px; right:10px; bottom:10px; z-index:9999; background:#a11d2e; color:#fff; font-family:sans-serif; font-size:12px; line-height:1.5; padding:12px 14px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.4); word-break:break-word; max-height:40vh; overflow-y:auto;"></div>
+<script src="script.js"></script>
+</body>
+</html>
