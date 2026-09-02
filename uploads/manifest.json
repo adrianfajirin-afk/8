@@ -1,6 +1,16 @@
 [
   {
     "type": "photo",
+    "name": "Lana",
+    "caption": "",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T05-31-59-565Z-jtvtz.jpg",
+    "videoUrl": null,
+    "audioUrl": null,
+    "audioDuration": 0,
+    "ts": "2026-09-02T05:32:07.235Z"
+  },
+  {
+    "type": "photo",
     "name": "Bb",
     "caption": "SAMAAWAAA",
     "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T04-56-39-387Z-jbb0o.jpg",
