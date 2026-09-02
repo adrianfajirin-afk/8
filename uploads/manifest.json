@@ -1,6 +1,16 @@
 [
   {
     "type": "photo",
+    "name": "Lana",
+    "caption": "Mdkdlldld",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T06-52-21-045Z-qkk3y.jpg",
+    "videoUrl": null,
+    "audioUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/harapan-2026-09-02T06-52-23-844Z-mbrkb.m4a",
+    "audioDuration": 3.208,
+    "ts": "2026-09-02T06:52:26.931Z"
+  },
+  {
+    "type": "photo",
     "name": "Lolol",
     "caption": "",
     "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T06-33-31-010Z-osl7j.jpg",
