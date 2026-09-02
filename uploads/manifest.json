@@ -1,5 +1,15 @@
 [
   {
+    "type": "photo",
+    "name": "Lanq",
+    "caption": "Harapan apa ya",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T03-09-34-174Z-rlo6b.jpg",
+    "videoUrl": null,
+    "audioUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/harapan-2026-09-02T03-09-38-106Z-ne9fi.m4a",
+    "audioDuration": 4.812,
+    "ts": "2026-09-02T03:09:42.043Z"
+  },
+  {
     "type": "video",
     "name": "A",
     "caption": "",
