@@ -1,5 +1,15 @@
 [
   {
+    "type": "photo",
+    "name": "A",
+    "caption": "",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T07-56-39-977Z-e19co.jpg",
+    "videoUrl": null,
+    "audioUrl": null,
+    "audioDuration": 0,
+    "ts": "2026-09-02T07:56:42.949Z"
+  },
+  {
     "type": "video",
     "name": "A",
     "caption": "A",
