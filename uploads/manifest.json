@@ -1,5 +1,15 @@
 [
   {
+    "type": "photo",
+    "name": "Bb",
+    "caption": "SAMAAWAAA",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-02T04-56-39-387Z-jbb0o.jpg",
+    "videoUrl": null,
+    "audioUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/harapan-2026-09-02T04-56-41-794Z-tevi4.m4a",
+    "audioDuration": 5.011,
+    "ts": "2026-09-02T04:56:44.132Z"
+  },
+  {
     "type": "video",
     "name": "Laha",
     "caption": "",
