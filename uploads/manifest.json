@@ -1,5 +1,15 @@
 [
   {
+    "type": "photo",
+    "name": "Dinda",
+    "caption": "Hwd",
+    "imageUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/wedding-2026-09-05T06-45-00-856Z-sdz8l.jpg",
+    "videoUrl": null,
+    "audioUrl": "https://raw.githubusercontent.com/photoboothkuningan/8/main/uploads/harapan-2026-09-05T06-45-09-752Z-3b3h0.m4a",
+    "audioDuration": 23.063,
+    "ts": "2026-09-05T06:45:15.306Z"
+  },
+  {
     "type": "video",
     "name": "Ccdd",
     "caption": "",
